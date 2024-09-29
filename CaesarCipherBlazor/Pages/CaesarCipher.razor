@@ -1,0 +1,103 @@
+﻿@using CaesarCipherBlazor.Services;
+@page "/"
+@inject ICaesarCipherService CaesarCipherService
+
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <style>
+        .header {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .logo {
+            font-family: 'Roboto', sans-serif;
+            font-size: 5em;
+            background: linear-gradient(90deg, #4CAF50, #81C784);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+
+<h3 class="header logo">Caesar Cipher</h3>
+
+<div>
+    <label for="message">Plain text:</label>
+    <textarea id="message" @bind="message" rows="5" cols="50"></textarea>
+</div>
+
+<div>
+    <label for="shift">Shift @shift</label>
+    <input type="range" id="shift" @bind="shift" min="1" max="25" step="1" @oninput="UpdateShiftValue" />
+    <div style="text-align: center; margin-top: -20px; margin-bottom: 10px;"></div>   
+</div>
+
+<br />
+
+<div style="text-align: center;">
+    <button @onclick="EncodeMessage">Encode</button>
+    <button @onclick="DecodeMessage">Decode</button>
+</div>
+
+<br />
+
+<p><strong>Cipher text:</strong> <br /><textarea id="result" @bind="result" rows="5" cols="50"></textarea></p>
+
+<style>
+    label {
+        font-weight: bold; 
+        margin-bottom: 0.5rem; 
+        display: block; 
+    }
+
+    textarea {
+        width: 100%; 
+        resize: vertical; 
+    }
+
+    input[type="range"] {
+        width: 100%; 
+    }
+
+    button {
+        background: linear-gradient(90deg, #4CAF50, #81C784); /* Zielony gradient */
+        border: none; /* Bez ramki */
+        color: white; /* Kolor tekstu */
+        padding: 10px 20px; /* Padding wewnętrzny */
+        text-align: center; /* Wyśrodkowanie tekstu */
+        text-decoration: none; /* Bez podkreślenia */
+        display: inline-block; /* Umożliwienie paddingu */
+        font-size: 1.2em; /* Rozmiar czcionki */
+        margin: 10px 2px; /* Marginesy */
+        cursor: pointer; /* Kursor ręki */
+        border-radius: 5px; /* Zaokrąglone rogi */
+        transition: background 0.3s; /* Animacja zmiany tła */
+    }
+
+        /* Styl dla przycisków po najechaniu */
+        button:hover {
+            background: linear-gradient(90deg, #81C784, #4CAF50); /* Odwrócony gradient */
+        }
+</style>
+
+@code {
+    private string message;
+    private int shift  = 1;
+    private string result;
+
+    private void UpdateShiftValue(ChangeEventArgs e)
+    {
+        shift = int.Parse(e.Value.ToString());
+    }
+
+    private void EncodeMessage()
+    {
+        result = CaesarCipherService.Encode(message, shift);
+    }
+
+    private void DecodeMessage()
+    {
+        result = CaesarCipherService.Decode(message, shift);
+    }
+}
